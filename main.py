@@ -29,7 +29,16 @@ def extract_information_from_pdf(file_path):
                 print(lines[i+1])
             # 請求金額を抽出(次の行が存在する時のみ処理)
             elif "請求金額" in line and i+1 < len(lines):
-                print(lines[i+1])
+                # 全ての金額らしき数字をカンマ区切りで抽出
+                money = re.findall(r"\d{1,3},\d{3}", text)
+                # 請求金額を入れる空リスト
+                numbers = []
+                # カンマの除去
+                numbers = money.replace(",","")
+                # 数値型に変換
+                numbers.append(int(money))
+                # 一番大きな金額を抽出
+                print(max(money))
 
     print(line)
         #print(lines)
