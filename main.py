@@ -29,19 +29,23 @@ def extract_information_from_pdf(file_path):
                 print(lines[i+1])
             # 請求金額を抽出(次の行が存在する時のみ処理)
             elif "請求金額" in line and i+1 < len(lines):
-                # 全ての金額らしき数字をカンマ区切りで抽出
-                money = re.findall(r"\d{1,3},\d{3}", text)
+                # 請求金額の近くの数字を抽出
+                target_text = "\n".join(lines[i-10:i+5]) #請求金額の前10行後を結合してテキストを作成
+                #print(target_text)
+                # 数字抽出
+                money = re.findall(r"\d[\d,]*", target_text) #正規表現を使用して、数字とカンマの組み合わせを抽出します。r"\d[\d,]*"は、数字で始まり、その後に数字やカンマが続くパターンを表しています。
+                #print(money)
                 # 請求金額を入れる空リスト
                 numbers = []
                 # カンマの除去
-                numbers = money.replace(",","")
-                # 数値型に変換
-                numbers.append(int(money))
+                for m in money:
+                     m = m.replace(",", "")
+                     # 数値型に変換
+                     numbers.append(int(m))
                 # 一番大きな金額を抽出
-                print(max(money))
+                if numbers:
+                    print(max(numbers))
 
-    print(line)
-        #print(lines)
 # PDFファイルが格納されているディレクトリのパスを設定します。
 directory_path = 'PDF'
 
