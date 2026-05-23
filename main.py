@@ -7,8 +7,13 @@ import re # Pythonで正規表現（Regular Expression）を扱うための標�
 # 請求日を抽出する関数を定義します。
 def extract_date(lines):
     for i, line in enumerate(lines):
-        if "請求日" in line and i+1 < len(lines):
-            return lines[i+1]
+        # パターン1: "請求日:"が行に含まれている場合、その行から請求日を抽出します。
+        if "請求日:" in line:
+            return line.replace("請求日:", "").strip()
+
+        # パターン2: "請求日"の次の行に請求日があるパターン。
+        elif "請求日" in line and i+1 < len(lines):
+            return lines[i + 1].strip()
 
 # 会社名を抽出する関数を定義します。
 def extract_company(lines):
@@ -23,23 +28,32 @@ def extract_company(lines):
 # 請求額を抽出する関数を定義します。
 def extract_money(lines):
     # 請求金額を抽出(次の行が存在する時のみ処理)
-    if "請求金額" in line and i+1 < len(lines):
-        # 請求金額の近くの数字を抽出
-        target_text = "\n".join(lines[i-10:i+5]) #請求金額の前10行後を結合してテキストを作成
-        #print(target_text)
-        # 数字抽出
-        money = re.findall(r"\d[\d,]*", target_text) #正規表現を使用して、数字とカンマの組み合わせを抽出します。r"\d[\d,]*"は、数字で始まり、その後に数字やカンマが続くパターンを表しています。
-        #print(money)
-        # 請求金額を入れる空リスト
-        numbers = []
-        # カンマの除去
-        for m in money:
-            m = m.replace(",", "")
-            # 数値型に変換
-            numbers.append(int(m))
-            # 一番大きな金額を抽出
+    for i, line in enumerate(lines):
+        if "請求金額" in line and i+1 < len(lines):
+
+            # 請求金額の近くの数字を抽出
+            target_text = "\n".join(lines[i-10:i+5]) #請求金額の前10行後を結合してテキストを作成
+            # デバッグ用に抽出したテキストを表示します。
+            #print("抽出テキスト" + target_text)
+
+            # 数字抽出
+            money = re.findall(r"\d[\d,]*", target_text) #正規表現を使用して、数字とカンマの組み合わせを抽出します。r"\d[\d,]*"は、数字で始まり、その後に数字やカンマが続くパターンを表しています。
+
+            # 請求金額を入れる空リスト
+            numbers = []
+
+            # カンマの除去
+            for m in money:
+                m = m.replace(",", "")
+                # 数値型に変換
+                numbers.append(int(m))
+                # 一番大きな金額を抽出
+            
             if numbers:
-                print(max(numbers))
+                    # デバッグ用に抽出した数字を表示します。
+                    #print("抽出した数字:", numbers)
+                    return (max(numbers))
+                    
         
 # PDFファイルから特定のキーワードに続くテキストを抽出する関数を定義します。
 # 引数はPDFファイルのパスを受け取ります。
@@ -57,18 +71,28 @@ def extract_information_from_pdf(file_path):
         date = extract_date(lines)
         money = extract_money(lines)
 
-        print(company, date, money)
+        return {
+            "company": company,
+            "date": date,
+            "money": money
+        }
 
-            
+# 抽出した情報を格納するための空のリストを作成します。
+all_data = []
 
-# PDFファイルが格納されているディレクトリのパスを設定します。
-directory_path = 'PDF'
+# 指定されたディレクトリ内のすべてのPDFファイルを処理します。
+for filename in os.listdir("PDF"):
+    # ファイルがPDFファイルであるかどうかを確認します。
+    if filename.endswith(".pdf"):
+        # PDFファイルのパスを作成します。os.path.join()は、複数のパス要素を結合して1つのパスを作成するための関数です。ここでは、"PDF"ディレクトリとファイル名を結合して、PDFファイルの完全なパスを作成しています。
+        pdf_path = os.path.join("PDF", filename)
 
-# 処理対象のPDFファイル名を設定します。
-filename = 'invoice-02.pdf'
+        # PDFファイルから情報を抽出する関数を呼び出します。
+        result = extract_information_from_pdf(pdf_path)
 
-# ディレクトリのパスとファイル名を結合して、PDFファイルのフルパスを作成します。os.path - ファイルの場所を扱う機能
-pdf_path = os.path.join(directory_path, filename)
-print(pdf_path)
-# PDFファイルから情報を抽出する関数を呼び出します。
-extract_information_from_pdf(pdf_path)
+        #デバッグ用にファイル名と抽出結果を表示します。
+        print(filename)
+        print(result)
+
+        all_data.append(result)
+
