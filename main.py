@@ -3,6 +3,7 @@
 import os  #ファイルやディレクトリの操作に使用します
 import fitz  #PPyMuPDFライブラリをインポートします。PDFファイルの読み込みや操作に使用します。
 import re # Pythonで正規表現（Regular Expression）を扱うための標準ライブラリ（reモジュール）を読み込む。
+import csv # CSVファイルを扱うための道具箱を使います！
 
 # 請求日を抽出する関数を定義します。
 def extract_date(lines):
@@ -15,6 +16,23 @@ def extract_date(lines):
         elif "請求日" in line and i+1 < len(lines):
             return lines[i + 1].strip()    
 
+# 日付を正規化する関数を定義します。
+def normalize_date(date_text):
+    if "年" in date_text:
+        parts = re.findall(r"\d+", date_text)
+        year = parts[0]
+        month = parts[1]
+        day = parts[2]
+        return f"{year}-{month.zfill(2)}-{day.zfill(2)}"
+    elif "/" in date_text:
+        parts = re.findall(r"\d+", date_text)
+        year = parts[2]
+        month = parts[0]
+        day = parts[1]
+        return f"{year}-{month.zfill(2)}-{day.zfill(2)}"
+    # yyyy-mm-ddが来た時にNoneが返るのを防ぐ
+    return date_text 
+    
 # 会社名を抽出する関数を定義します。
 def extract_company(lines):
     # linesにカウンタを追加
@@ -68,6 +86,11 @@ def extract_information_from_pdf(file_path):
         lines = text.split('\n')
         company = extract_company(lines)
         date = extract_date(lines)
+        # 確認用
+        # print("変換前：" + date)
+        date = normalize_date(date)
+        # 確認用
+        # print("変換後：" + date)
         money = extract_money(lines)
 
         return {
@@ -75,23 +98,6 @@ def extract_information_from_pdf(file_path):
             "date": date,
             "money": money
         }
-
-# 日付を正規化する関数を定義します。
-def normalize_date(date_text):
-    if "年" in date_text:
-        date_text = "2025年4月30日"
-        parts = re.findall(r"\d+", date_text)
-        year = parts[0]
-        month = parts[1]
-        day = parts[2]
-        print("取得した日付：" + year + "年" + month + "月" + day + "日")
-    elif "/" in date_text:
-        date_text = "4/30/2024"
-        parts = re.findall(r"\d+", date_text)
-        year = parts[2]
-        month = parts[0]
-        day = parts[1]
-        print("取得した日付：" + year + "年" + month + "月" + day + "日")
         
 # 抽出した情報を格納するための空のリストを作成します。
 all_data = []
@@ -105,10 +111,14 @@ for filename in os.listdir("PDF"):
 
         # PDFファイルから情報を抽出する関数を呼び出します。
         result = extract_information_from_pdf(pdf_path)
-
-        #デバッグ用にファイル名と抽出結果を表示します。
-        print(filename)
-        print(result)
-
         all_data.append(result)
 
+#デバッグ用にファイル名と抽出結果を表示します。
+print(all_data)       
+
+# PDFファイルから抽出した情報をCSVに書きだします。
+# CSVファイルを開く。
+with open("請求情報.csv","w",newline = "",encoding = "utf-8-sig") as f:
+    writer = csv.writer(f)
+    writer.writerow(["会社名","請求日","請求金額"])
+    writer.writerows(result["company"],result["date"],result["money"])
