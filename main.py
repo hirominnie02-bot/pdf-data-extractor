@@ -13,7 +13,7 @@ def extract_date(lines):
 
         # パターン2: "請求日"の次の行に請求日があるパターン。
         elif "請求日" in line and i+1 < len(lines):
-            return lines[i + 1].strip()
+            return lines[i + 1].strip()    
 
 # 会社名を抽出する関数を定義します。
 def extract_company(lines):
@@ -52,8 +52,7 @@ def extract_money(lines):
             if numbers:
                     # デバッグ用に抽出した数字を表示します。
                     #print("抽出した数字:", numbers)
-                    return (max(numbers))
-                    
+                    return (max(numbers))    
         
 # PDFファイルから特定のキーワードに続くテキストを抽出する関数を定義します。
 # 引数はPDFファイルのパスを受け取ります。
@@ -77,6 +76,23 @@ def extract_information_from_pdf(file_path):
             "money": money
         }
 
+# 日付を正規化する関数を定義します。
+def normalize_date(date_text):
+    if "年" in date_text:
+        date_text = "2025年4月30日"
+        parts = re.findall(r"\d+", date_text)
+        year = parts[0]
+        month = parts[1]
+        day = parts[2]
+        print("取得した日付：" + year + "年" + month + "月" + day + "日")
+    elif "/" in date_text:
+        date_text = "4/30/2024"
+        parts = re.findall(r"\d+", date_text)
+        year = parts[2]
+        month = parts[0]
+        day = parts[1]
+        print("取得した日付：" + year + "年" + month + "月" + day + "日")
+        
 # 抽出した情報を格納するための空のリストを作成します。
 all_data = []
 
