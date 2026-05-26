@@ -51,15 +51,25 @@ def extract_company(lines):
 def extract_money(lines):
     # 請求金額を抽出(次の行が存在する時のみ処理)
     for i, line in enumerate(lines):
-        if "請求金額" in line and i+1 < len(lines):
-
+        #ルール1：請求金額と同じ行に金額がある場合
+        if "請求金額" in line: 
+            money = re.findall(r"\d[\d,]*", line) 
+            return money
+        
+        #ルール2：請求金額の次の行に金額がある場合
+        elif "請求金額" in line and i+1 < len(lines):
+            target_text = lines[i+1]
+            money = re.findall(r"\d[\d,]*",target_text) #正規表現を使用して、数字とカンマの組み合わせを抽出します。r"\d[\d,]*"は、数字で始まり、その後に数字やカンマが続くパターンを表しています。
+            return money
+        
+        #ルール3：請求金額の前5行から最大値を探さないと金額が分からない場合
+        elif "請求金額" in line and i+1 < len(lines):
             # 請求金額の近くの数字を抽出
-            target_text = "\n".join(lines[i-10:i+5]) #請求金額の前10行後を結合してテキストを作成
+            target_text = "\n".join(lines[i-5:i]) #請求金額の前5行を結合してテキストを作成
+            money = re.findall(r"\d[\d,]*",target_text) 
+
             # デバッグ用に抽出したテキストを表示します。
             #print("抽出テキスト" + target_text)
-
-            # 数字抽出
-            money = re.findall(r"\d[\d,]*", target_text) #正規表現を使用して、数字とカンマの組み合わせを抽出します。r"\d[\d,]*"は、数字で始まり、その後に数字やカンマが続くパターンを表しています。
 
             # 請求金額を入れる空リスト
             numbers = []
@@ -104,15 +114,15 @@ def extract_information_from_pdf(file_path):
         }
 
 #デバック用  
-# filename = "invoice-03.pdf"
-# pdf_path = os.path.join("PDF", filename)
-# doc = fitz.open(pdf_path)
-#for page in doc:
-    # text = page.get_text()
-    # lines = text.split("\n")
+filename = "invoice-03.pdf"
+pdf_path = os.path.join("PDF", filename)
+doc = fitz.open(pdf_path)
+for page in doc:
+    text = page.get_text()
+    lines = text.split("\n")
 
-    # for i, line in enumerate(lines):
-    #     print(i, line)
+    for i, line in enumerate(lines):
+        print(i, line)
 
 
 # 抽出した情報を格納するための空のリストを作成します。
