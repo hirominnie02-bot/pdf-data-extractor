@@ -42,6 +42,10 @@ def extract_company(lines):
             billing_address=line.replace("御中", "").strip()
             # 分割したテキストの各行を出力します。
             return billing_address
+        #御中がない場合⇒様があるか探す 
+        elif "様" in line:
+            #その2行前を返す
+            return lines[i - 2].strip() 
 
 # 請求額を抽出する関数を定義します。
 def extract_money(lines):
@@ -98,7 +102,19 @@ def extract_information_from_pdf(file_path):
             "date": date,
             "money": money
         }
-        
+
+#デバック用  
+# filename = "invoice-03.pdf"
+# pdf_path = os.path.join("PDF", filename)
+# doc = fitz.open(pdf_path)
+#for page in doc:
+    # text = page.get_text()
+    # lines = text.split("\n")
+
+    # for i, line in enumerate(lines):
+    #     print(i, line)
+
+
 # 抽出した情報を格納するための空のリストを作成します。
 all_data = []
 
@@ -114,11 +130,19 @@ for filename in os.listdir("PDF"):
         all_data.append(result)
 
 #デバッグ用にファイル名と抽出結果を表示します。
-print(all_data)       
+print(all_data)
+
+
+
 
 # PDFファイルから抽出した情報をCSVに書きだします。
 # CSVファイルを開く。
 with open("請求情報.csv","w",newline = "",encoding = "utf-8-sig") as f:
-    writer = csv.writer(f)
+    writer = csv.writer(f) #CSVに書き込む係を作る(fで開いたファイルに対して書き込みを行う準備)
     writer.writerow(["会社名","請求日","請求金額"])
-    writer.writerows(result["company"],result["date"],result["money"])
+    for data in all_data:
+        writer.writerow([
+        data["company"],
+        data["date"],
+        data["money"]
+        ])
