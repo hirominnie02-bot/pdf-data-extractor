@@ -142,7 +142,7 @@ for filename in os.listdir("PDF"):
         result = extract_information_from_pdf(pdf_path)
         all_data.append(result)
 
-#デバッグ用にファイル名と抽出結果を表示します。
+#抽出結果を表示します。
 print(all_data)
 
 
