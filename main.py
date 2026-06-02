@@ -146,8 +146,6 @@ for filename in os.listdir("PDF"):
 print(all_data)
 
 
-
-
 # PDFファイルから抽出した情報をCSVに書きだします。
 # CSVファイルを開く。
 with open("請求情報.csv","w",newline = "",encoding = "utf-8-sig") as f:
