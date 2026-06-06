@@ -121,21 +121,24 @@ def extract_information_from_pdf(pdf_bytes):
 # Streamlit-------------------------------------
 
 st.title("請求書PDF情報抽出ツール")
+st.write("PDFをアップロードすると会社名・請求日・請求金額を抽出します。")
 
 uploaded_file = st.file_uploader("PDFを選択してください")
 
 
 
 if uploaded_file: #ファイルがアップロードされた場合の処理を行います。
-    st.write(uploaded_file.name)
+    st.caption(uploaded_file.name)
 
     pdf_bytes = uploaded_file.getvalue()
 
     result = extract_information_from_pdf(pdf_bytes)
 
+    st.subheader("抽出結果")
+
     st.write("会社名:", result["company"])
     st.write("請求日:", result["date"])
-    st.write("請求金額:", result["money"])
+    st.metric("請求金額", f"{result['money']:,}円") #数値をカンマ区切りで表示するために、f文字列と:,を使用しています。
     st.success("抽出完了！")
     
     #CSV形式のデータを作成する
@@ -144,7 +147,7 @@ if uploaded_file: #ファイルがアップロードされた場合の処理を�
     """
     st.download_button(
     label="CSVダウンロード",
-    data = csv_data,
+    data = csv_data.encode("utf-8-sig"),
     file_name="請求情報.csv"
     )
 
