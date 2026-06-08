@@ -123,23 +123,33 @@ def extract_information_from_pdf(pdf_bytes):
 st.title("請求書PDF情報抽出ツール")
 st.write("PDFをアップロードすると会社名・請求日・請求金額を抽出します。")
 
-uploaded_file = st.file_uploader("PDFを選択してください")
+uploaded_files = st.file_uploader(
+    "PDFを選択してください（複数選択可能）",
+    accept_multiple_files = True #複数ファイルを許可するパラメータ
+    )
 
 
+all_data = [] #抽出情報を貯めるリストを作る
+if uploaded_files: #ファイルがアップロードされた場合の処理を行います。
+    for uploaded_file in uploaded_files:
+        st.caption(uploaded_file.name)
+    
+    # st.write(type(uploaded_files))
+    # st.write(uploaded_files)
 
-if uploaded_file: #ファイルがアップロードされた場合の処理を行います。
-    st.caption(uploaded_file.name)
+        pdf_bytes = uploaded_file.getvalue()
 
-    pdf_bytes = uploaded_file.getvalue()
+        result = extract_information_from_pdf(pdf_bytes)
+        all_data.append(result)
 
-    result = extract_information_from_pdf(pdf_bytes)
+        st.subheader("抽出結果")
 
-    st.subheader("抽出結果")
+        st.write("会社名:", result["company"])
+        st.write("請求日:", result["date"])
+        st.metric("請求金額", f"{result['money']:,}円") #数値をカンマ区切りで表示するために、f文字列と:,を使用しています。
+        st.success("抽出完了！")
 
-    st.write("会社名:", result["company"])
-    st.write("請求日:", result["date"])
-    st.metric("請求金額", f"{result['money']:,}円") #数値をカンマ区切りで表示するために、f文字列と:,を使用しています。
-    st.success("抽出完了！")
+    st.write(all_data)
     
     #CSV形式のデータを作成する
     csv_data = f"""会社名,請求日,請求金額
