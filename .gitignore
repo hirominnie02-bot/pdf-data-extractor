@@ -1,3 +1,11 @@
 **/.vscode/
 sftp.json
 請求情報.csv
+
+__pycache__/
+*.pyc
+
+.venv/
+venv/
+
+.streamlit/secrets.toml
