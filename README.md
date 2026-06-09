@@ -1,14 +1,17 @@
 # 請求書PDF情報抽出ツール
 
+## 特徴
+
+- 複数の請求書PDFを一括処理
+- 会社名・請求日・請求金額を自動抽出
+- CSVファイルとしてダウンロード可能
+- StreamlitによるWebアプリ化
+
 ## 概要
 
 様々な書式の請求書PDFから会社名・請求日・請求金額を抽出し、CSVファイルへまとめるWebアプリです。
 Streamlitを使用してブラウザ上で操作できるようにし、複数の請求書PDFを一括で処理できるようにしました。
 
-## プロジェクト構成
-![プロジェクト構成](images/project_structure.png)
-
-## 実行結果
 ## アプリ画面
 
 ![アプリ画面](images/streamlit_app.png)
@@ -16,6 +19,9 @@ Streamlitを使用してブラウザ上で操作できるようにし、複数�
 ## CSV出力結果
 
 ![CSV出力結果](images/output_csv.png)
+
+## プロジェクト構成
+![プロジェクト構成](images/project_structure.png)
 
 ## 制作背景
 
@@ -28,7 +34,7 @@ Streamlitを使用してブラウザ上で操作できるようにし、複数�
 * 会社名の抽出
 * 請求日の抽出
 * 請求金額の抽出
-* CSVファイルへの出力
+* CSVに加えExcel（xlsx）形式での出力
 
 ### 実行例
 入力ファイル
@@ -62,10 +68,12 @@ invoice-03.pdf
 ## 使用技術
 
 * Python
+* Streamlit
 * PyMuPDF
 * re（正規表現）
 * csv
 * os
+* Git / GitHub
 
 ## 工夫した点
 
@@ -97,5 +105,6 @@ invoice-03.pdf
 
 * 和暦形式の日付への対応
 * Excel（xlsx）形式での出力
-* GUI化（Streamlit）
+* 抽出結果の表形式表示
+* エラーメッセージの改善
 * より多くの請求書フォーマットへの対応
