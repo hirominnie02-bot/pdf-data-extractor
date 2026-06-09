@@ -152,9 +152,12 @@ if uploaded_files: #ファイルがアップロードされた場合の処理を
     st.write(all_data)
     
     #CSV形式のデータを作成する
-    csv_data = f"""会社名,請求日,請求金額
-    {result["company"]},{result["date"]},{result["money"]}
-    """
+    csv_data = "会社名,請求日,請求金額\n"
+
+    for data in all_data:
+        csv_data += f"{data['company']},{data['date']},{data['money']}\n"
+    
+    #CSVデータダウンロードボタンを作る
     st.download_button(
     label="CSVダウンロード",
     data = csv_data.encode("utf-8-sig"),

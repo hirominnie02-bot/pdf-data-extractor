@@ -2,16 +2,20 @@
 
 ## 概要
 
-様々な書式の請求書PDFから会社名・請求日・請求金額を抽出し、CSVファイルへまとめるPythonツールです。
+様々な書式の請求書PDFから会社名・請求日・請求金額を抽出し、CSVファイルへまとめるWebアプリです。
+Streamlitを使用してブラウザ上で操作できるようにし、複数の請求書PDFを一括で処理できるようにしました。
 
 ## プロジェクト構成
 ![プロジェクト構成](images/project_structure.png)
 
 ## 実行結果
-![実行結果](images/execution_result.png)
+## アプリ画面
 
-## 出力CSV
-![出力CSV](images/output_csv.png)
+![アプリ画面](images/streamlit_app.png)
+
+## CSV出力結果
+
+![CSV出力結果](images/output_csv.png)
 
 ## 制作背景
 
