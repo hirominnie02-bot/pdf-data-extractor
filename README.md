@@ -12,16 +12,21 @@
 様々な書式の請求書PDFから会社名・請求日・請求金額を抽出し、CSVファイルへまとめるWebアプリです。
 Streamlitを使用してブラウザ上で操作できるようにし、複数の請求書PDFを一括で処理できるようにしました。
 
+## デモサイト
+
+[アプリを開く](https://pdf-data-extractor-sswobjlyhzcuzcnbrnxjen.streamlit.app/)
+
 ## アプリ画面
 
 ![アプリ画面](images/streamlit_app.png)
+
+## プロジェクト構成
+![プロジェクト構成](images/project_structure.png)
 
 ## CSV出力結果
 
 ![CSV出力結果](images/output_csv.png)
 
-## プロジェクト構成
-![プロジェクト構成](images/project_structure.png)
 
 ## 制作背景
 
@@ -34,36 +39,8 @@ Streamlitを使用してブラウザ上で操作できるようにし、複数�
 * 会社名の抽出
 * 請求日の抽出
 * 請求金額の抽出
-* CSVに加えExcel（xlsx）形式での出力
-
-### 実行例
-入力ファイル
-
-invoice-01.pdf
-invoice-02.pdf
-invoice-03.pdf
-
-↓
-
-出力結果
-```python
-
-[
-    {'company': '株式会社 〇〇', 'date': '2025-04-30', 'money': 330000},
-    {'company': '株式会社ひつじ', 'date': '2024-04-30', 'money': 33000},
-    {'company': 'サンプル株式会社', 'date': '2022-05-01', 'money': 539}
-]
-```
-
-↓
-
-出力CSV
-```csv
-会社名,請求日,請求金額
-株式会社 〇〇,2025-04-30,330000
-株式会社ひつじ,2024-04-30,33000
-サンプル株式会社,2022-05-01,539
-```
+* CSVファイルとしてダウンロード
+* サンプル請求書PDFのダウンロード
 
 ## 使用技術
 
