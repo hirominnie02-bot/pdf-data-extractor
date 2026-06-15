@@ -123,6 +123,36 @@ def extract_information_from_pdf(pdf_bytes):
 st.title("請求書PDF情報抽出ツール")
 st.write("PDFをアップロードすると会社名・請求日・請求金額を抽出します。")
 
+st.subheader("サンプル請求書")
+col1, col2, col3 = st.columns(3)
+with col1:
+    with open("PDF/invoice-01.pdf", "rb") as f:
+        st.download_button(
+            "📄 invoice-01.pdf",
+            data=f,
+            file_name="invoice-01.pdf",
+            mime="application/pdf"
+        )
+with col2:
+    with open("PDF/invoice-02.pdf", "rb") as f:
+        st.download_button(
+            "📄 invoice-02.pdf",
+            data=f,
+            file_name="invoice-02.pdf",
+            mime="application/pdf"
+        )
+with col3:
+    with open("PDF/invoice-03.pdf", "rb") as f:
+        st.download_button(
+            "📄 invoice-03.pdf",
+            data=f,
+            file_name="invoice-03.pdf",
+            mime="application/pdf"
+        )
+    
+
+
+
 uploaded_files = st.file_uploader(
     "PDFを選択してください（複数選択可能）",
     accept_multiple_files = True #複数ファイルを許可するパラメータ
@@ -147,10 +177,10 @@ if uploaded_files: #ファイルがアップロードされた場合の処理を
         st.write("会社名:", result["company"])
         st.write("請求日:", result["date"])
         st.metric("請求金額", f"{result['money']:,}円") #数値をカンマ区切りで表示するために、f文字列と:,を使用しています。
-        st.success("抽出完了！")
-
-    st.write(all_data)
-    
+        
+    st.success("抽出完了！")
+    st.dataframe(all_data)
+    st.info(f"{len(all_data)}件の請求書を処理しました")
     #CSV形式のデータを作成する
     csv_data = "会社名,請求日,請求金額\n"
 
